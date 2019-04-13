@@ -43,6 +43,20 @@ $ads = [
         'image_url' => 'img/lot-6.jpg'
     ]
 ];
+
+function format_price(float $number): string
+{
+    $number = ceil($number);
+
+    if ($number >= 1000) {
+        $number = number_format($number, 0, '', ' ');
+    }
+
+    $number .= '<b class="rub">р</b>';
+
+    return $number;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -98,7 +112,7 @@ $ads = [
             <p class="promo__text">На нашем интернет-аукционе ты найдёшь самое эксклюзивное сноубордическое и
                 горнолыжное снаряжение.</p>
             <ul class="promo__list">
-                <?php foreach ($categories as $key => $value): ?>
+                <?php foreach ($categories as $value): ?>
                     <li class="promo__item promo__item--boards">
                         <a class="promo__link" href="pages/all-lots.html">
                             <?php if (isset($value)) {
@@ -131,11 +145,9 @@ $ads = [
                             </span>
                             <h3 class="lot__title">
                                 <a class="text-link" href="pages/lot.html">
-                                    <?php
-                                    if (isset($value['title'])) {
+                                    <?php if (isset($value['title'])) {
                                         echo strip_tags($value['title']);
-                                    }
-                                    ?>
+                                    } ?>
                                 </a>
                             </h3>
                             <div class="lot__state">
@@ -143,9 +155,9 @@ $ads = [
                                     <span class="lot__amount">Стартовая цена</span>
                                     <span class="lot__cost">
                                         <?php if (isset($value['price'])) {
-                                            echo strip_tags($value['price']);
+                                            echo format_price($value['price']);
                                         } ?>
-                                        <b class="rub">р</b></span>
+                                    </span>
                                 </div>
                                 <div class="lot__timer timer">
                                     12:23
