@@ -56,9 +56,7 @@
             <?php foreach ($categories as $key => $value): ?>
                 <li class="nav__item">
                     <a href="pages/all-lots.html">
-                        <?php if (isset($value)) {
-                            echo strip_tags($value);
-                        } ?>
+                        <?= strip_tags($value); ?>
                     </a>
                 </li>
             <?php endforeach; ?>
