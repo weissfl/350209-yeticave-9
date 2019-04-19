@@ -59,9 +59,16 @@ function format_price(float $number): string
     return $number;
 }
 
+date_default_timezone_set("Europe/Moscow");
+
+$ts = time();
+$ts_midnight = strtotime('tomorrow');
+$ts_diff = $ts_midnight - $ts;
+
 $page_content = include_template('index.php', [
     'categories' => $categories,
-    'ads' => $ads
+    'ads' => $ads,
+    'time' => $ts_diff
 ]);
 
 $layout_content = include_template('layout.php', [

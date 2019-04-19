@@ -48,8 +48,8 @@
                                 } ?>
                             </span>
                         </div>
-                        <div class="lot__timer timer">
-                            12:23
+                        <div class="lot__timer timer  <?php if ($time <= 3600): echo 'timer--finishing'; endif; ?>">
+                            <?= date('H:i', $time); ?>
                         </div>
                     </div>
                 </div>
