@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title><?php if(isset($title)): echo strip_tags($title);  endif; ?></title>
+    <title><?= strip_tags($title); ?></title>
     <link href="../css/normalize.min.css" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
 </head>
@@ -46,14 +46,14 @@
     </header>
 
     <main class="container">
-        <?php if(isset($content)): echo $content;  endif; ?>
+        <?php if (isset($content)): echo $content; endif; ?>
     </main>
 </div>
 
 <footer class="main-footer">
     <nav class="nav">
         <ul class="nav__list container">
-            <?php foreach ($categories as $key => $value): ?>
+            <?php foreach ($categories as $value): ?>
                 <li class="nav__item">
                     <a href="pages/all-lots.html">
                         <?= strip_tags($value); ?>
