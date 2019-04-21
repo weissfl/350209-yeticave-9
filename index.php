@@ -1,5 +1,6 @@
 <?php
 require('helpers.php');
+require('functions.php');
 
 $is_auth = rand(0, 1);
 
@@ -45,19 +46,6 @@ $ads = [
         'image_url' => 'img/lot-6.jpg'
     ]
 ];
-
-function format_price(float $number): string
-{
-    $number = ceil($number);
-
-    if ($number >= 1000) {
-        $number = number_format($number, 0, '', ' ');
-    }
-
-    $number .= '<b class="rub">р</b>';
-
-    return $number;
-}
 
 $page_content = include_template('index.php', [
     'categories' => $categories,
