@@ -1,5 +1,6 @@
 <?php
 require('helpers.php');
+require('functions.php');
 
 $is_auth = rand(0, 1);
 
@@ -46,29 +47,9 @@ $ads = [
     ]
 ];
 
-function format_price(float $number): string
-{
-    $number = ceil($number);
-
-    if ($number >= 1000) {
-        $number = number_format($number, 0, '', ' ');
-    }
-
-    $number .= '<b class="rub">р</b>';
-
-    return $number;
-}
-
-date_default_timezone_set("Europe/Moscow");
-
-$ts = time();
-$ts_midnight = strtotime('tomorrow');
-$ts_diff = $ts_midnight - $ts;
-
 $page_content = include_template('index.php', [
     'categories' => $categories,
-    'ads' => $ads,
-    'time' => $ts_diff
+    'ads' => $ads
 ]);
 
 $layout_content = include_template('layout.php', [

@@ -48,8 +48,8 @@
                                 } ?>
                             </span>
                         </div>
-                        <div class="lot__timer timer  <?php if ($time <= 3600): echo 'timer--finishing'; endif; ?>">
-                            <?= date('H:i', $time); ?>
+                        <div class="lot__timer timer  <?php if (warning_finishing('tomorrow')): echo 'timer--finishing'; endif; ?>">
+                            <?= lifetime_lot('tomorrow'); ?>
                         </div>
                     </div>
                 </div>
