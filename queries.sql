@@ -33,7 +33,7 @@ SELECT * FROM categories;
 SELECT l.name, l.price, l.img_url, b.price, c.name FROM lots AS l
 JOIN bets AS b ON l.id = b.lot_id
 JOIN categories AS c ON l.category_id = c.id
-WHERE l.date < l.date_finish
+WHERE NOW() < l.date_finish
 ORDER BY l.date DESC LIMIT 3;
 
 /*Получаем лот по его id и категорию лота*/
