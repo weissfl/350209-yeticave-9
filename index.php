@@ -6,54 +6,33 @@ $is_auth = rand(0, 1);
 
 $user_name = 'weissfl';
 
-$categories = ['Доски и лыжи', 'Крепления', 'Ботинки', 'Одежда', 'Инструменты', 'Разное'];
+$con = mysqli_connect("localhost", "root", "3d199xz", "yeticave");
+mysqli_set_charset($con, "utf8");
 
-$ads = [
-    [
-        'title' => '2014 Rossignol District Snowboard',
-        'category' => 'Доски и лыжи',
-        'price' => '10999',
-        'image_url' => 'img/lot-1.jpg'
-    ],
-    [
-        'title' => 'DC Ply Mens 2016/2017 Snowboard',
-        'category' => 'Доски и лыжи',
-        'price' => '159999',
-        'image_url' => 'img/lot-2.jpg'
-    ],
-    [
-        'title' => 'Крепления Union Contact Pro 2015 года размер L/XL',
-        'category' => 'Крепления',
-        'price' => '8000',
-        'image_url' => 'img/lot-3.jpg'
-    ],
-    [
-        'title' => 'Ботинки для сноуборда DC Mutiny Charocal',
-        'category' => 'Ботинки',
-        'price' => '10999',
-        'image_url' => 'img/lot-4.jpg'
-    ],
-    [
-        'title' => 'Куртка для сноуборда DC Mutiny Charocal',
-        'category' => 'Одежда',
-        'price' => '7500',
-        'image_url' => 'img/lot-5.jpg'
-    ],
-    [
-        'title' => 'Маска Oakley Canopy',
-        'category' => 'Разное',
-        'price' => '5400',
-        'image_url' => 'img/lot-6.jpg'
-    ]
-];
+if ($con == false) {
+    print("Ошибка подключения: " . mysqli_connect_error());
+}
+else {
+    $sql_lots = "SELECT l.name, l.price AS start_price, l.img_url, b.price, c.NAME AS cat FROM lots AS l
+    LEFT JOIN bets AS b ON l.id = b.lot_id
+    LEFT JOIN categories AS c ON l.category_id = c.id
+    WHERE NOW() < l.date_finish AND l.winner_id IS NULL
+    ORDER BY l.date DESC LIMIT 6;";
+    $res_lots = mysqli_query($con, $sql_lots);
+    $rows_lots = mysqli_fetch_all($res_lots, MYSQLI_ASSOC);
+
+    $sql_cat = "SELECT * FROM categories;";
+    $res_cat = mysqli_query($con, $sql_cat);
+    $rows_cat = mysqli_fetch_all($res_cat, MYSQLI_ASSOC);
+}
 
 $page_content = include_template('index.php', [
-    'categories' => $categories,
-    'ads' => $ads
+    'categories' => $rows_cat,
+    'ads' => $rows_lots
 ]);
 
 $layout_content = include_template('layout.php', [
-    'categories' => $categories,
+    'categories' => $rows_cat,
     'content' => $page_content,
     'is_auth' => $is_auth,
     'user_name' => $user_name,
