@@ -17,7 +17,7 @@ else {
     LEFT JOIN bets AS b ON l.id = b.lot_id
     LEFT JOIN categories AS c ON l.category_id = c.id
     WHERE NOW() < l.date_finish AND l.winner_id IS NULL
-    GROUP BY l.id, c.NAME
+    GROUP BY l.id
     ORDER BY l.date DESC
     LIMIT 6;";
     $result_lots = mysqli_query($connect, $sql_lots);
