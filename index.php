@@ -6,50 +6,49 @@ $is_auth = rand(0, 1);
 
 $user_name = 'weissfl';
 
-$categories = ['Доски и лыжи', 'Крепления', 'Ботинки', 'Одежда', 'Инструменты', 'Разное'];
+$connect = mysqli_connect("localhost", "root", "3d199xz", "yeticave");
+mysqli_set_charset($connect, "utf8");
 
-$ads = [
-    [
-        'title' => '2014 Rossignol District Snowboard',
-        'category' => 'Доски и лыжи',
-        'price' => '10999',
-        'image_url' => 'img/lot-1.jpg'
-    ],
-    [
-        'title' => 'DC Ply Mens 2016/2017 Snowboard',
-        'category' => 'Доски и лыжи',
-        'price' => '159999',
-        'image_url' => 'img/lot-2.jpg'
-    ],
-    [
-        'title' => 'Крепления Union Contact Pro 2015 года размер L/XL',
-        'category' => 'Крепления',
-        'price' => '8000',
-        'image_url' => 'img/lot-3.jpg'
-    ],
-    [
-        'title' => 'Ботинки для сноуборда DC Mutiny Charocal',
-        'category' => 'Ботинки',
-        'price' => '10999',
-        'image_url' => 'img/lot-4.jpg'
-    ],
-    [
-        'title' => 'Куртка для сноуборда DC Mutiny Charocal',
-        'category' => 'Одежда',
-        'price' => '7500',
-        'image_url' => 'img/lot-5.jpg'
-    ],
-    [
-        'title' => 'Маска Oakley Canopy',
-        'category' => 'Разное',
-        'price' => '5400',
-        'image_url' => 'img/lot-6.jpg'
-    ]
-];
+if ($connect === false) {
+    exit("Ошибка подключения: " . mysqli_connect_error());
+}
+else {
+    $sql_lots = "SELECT l.id, l.name, l.price AS start_price, l.img_url, MAX(b.price), c.NAME AS cat FROM lots AS l
+    LEFT JOIN bets AS b ON l.id = b.lot_id
+    LEFT JOIN categories AS c ON l.category_id = c.id
+    WHERE NOW() < l.date_finish AND l.winner_id IS NULL
+    GROUP BY l.id
+    ORDER BY l.date DESC
+    LIMIT 6;";
+    $result_lots = mysqli_query($connect, $sql_lots);
+
+    if ($result_lots) {
+        $lots = mysqli_fetch_all($result_lots, MYSQLI_ASSOC);
+        if(is_null($lots)){
+            exit(mysqli_error($connect));
+        }
+    }
+    else {
+        exit(mysqli_error($connect));
+    }
+
+    $sql_categories = "SELECT * FROM categories;";
+    $result_categories = mysqli_query($connect, $sql_categories);
+
+    if ($result_lots) {
+        $categories = mysqli_fetch_all($result_categories, MYSQLI_ASSOC);
+        if(is_null($categories)){
+            exit(mysqli_error($connect));
+        }
+    }
+    else {
+        exit(mysqli_error($connect));
+    }
+}
 
 $page_content = include_template('index.php', [
     'categories' => $categories,
-    'ads' => $ads
+    'ads' => $lots
 ]);
 
 $layout_content = include_template('layout.php', [
