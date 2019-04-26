@@ -30,11 +30,13 @@ VALUES ('2019-04-06 15:10:10', '11099', '2', '1'),
 SELECT * FROM categories;
 
 /*Получаем самые новые открытые лоты*/
-SELECT l.name, l.price AS start_price, l.img_url, b.price, c.NAME AS cat FROM lots AS l
+SELECT l.id, l.name, l.price AS start_price, l.img_url, MAX(b.price), c.NAME AS cat FROM lots AS l
 LEFT JOIN bets AS b ON l.id = b.lot_id
 LEFT JOIN categories AS c ON l.category_id = c.id
 WHERE NOW() < l.date_finish AND l.winner_id IS NULL
-ORDER BY l.date DESC LIMIT 3;
+GROUP BY l.id, c.NAME
+ORDER BY l.date DESC
+LIMIT 6;
 
 /*Получаем лот по его id и категорию лота*/
 SELECT l.*, c.name AS cat FROM lots AS l JOIN categories AS c ON l.category_id = c.id WHERE l.id = 1;
