@@ -1,5 +1,9 @@
 <?php
-if(file_exists('config.php')) {
+$is_auth = rand(0, 1);
+
+$user_name = 'weissfl';
+
+if (file_exists('config.php')) {
     require_once 'config.php';
 } else {
     exit('Скопируйте config.default.php в config.php и установите настройки приложения');
@@ -23,17 +27,18 @@ class DbConnectionProvider
         return self::$connection;
     }
 }
-function getData($sql) {
+
+function getData($sql)
+{
     $link = DbConnectionProvider::getConnection();
     $result = mysqli_query($link, $sql);
 
     if ($result) {
         $result = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        if(is_null($result)){
+        if (is_null($result)) {
             exit(mysqli_error($link));
         }
-    }
-    else {
+    } else {
         exit(mysqli_error($link));
     }
 
