@@ -48,6 +48,20 @@ function getCategories(): array
     return $categories;
 }
 
+function getFreshLots(): array
+{
+    $sql = "SELECT l.id, l.name, l.price AS start_price, l.img_url, MAX(b.price), c.NAME AS cat FROM lots AS l
+    LEFT JOIN bets AS b ON l.id = b.lot_id
+    LEFT JOIN categories AS c ON l.category_id = c.id
+    WHERE NOW() < l.date_finish AND l.winner_id IS NULL
+    GROUP BY l.id
+    ORDER BY l.date DESC
+    LIMIT 6;";
+    $lots = getData($sql);
+
+    return $lots;
+}
+
 function format_price(float $number): string
 {
     $number = ceil($number);
