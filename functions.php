@@ -23,22 +23,27 @@ class DbConnectionProvider
         return self::$connection;
     }
 }
-
-function getCategories(): array
-{
+function getData($sql) {
     $link = DbConnectionProvider::getConnection();
-    $sql = "SELECT * FROM categories";
     $result = mysqli_query($link, $sql);
 
     if ($result) {
-        $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        if(is_null($categories)){
+        $result = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        if(is_null($result)){
             exit(mysqli_error($link));
         }
     }
     else {
         exit(mysqli_error($link));
     }
+
+    return $result;
+}
+
+function getCategories(): array
+{
+    $sql = "SELECT * FROM categories";
+    $categories = getData($sql);
 
     return $categories;
 }
