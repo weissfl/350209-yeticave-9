@@ -1,4 +1,10 @@
 <?php
+if(file_exists('config.php')) {
+    require_once 'config.php';
+} else {
+    exit('Скопируйте config.default.php в config.php и установите настройки приложения');
+}
+
 require('helpers.php');
 require('functions.php');
 
@@ -6,7 +12,7 @@ $is_auth = rand(0, 1);
 
 $user_name = 'weissfl';
 
-$connect = mysqli_connect("localhost", "root", "3d199xz", "yeticave");
+$connect = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 mysqli_set_charset($connect, "utf8");
 
 if ($connect === false) {
