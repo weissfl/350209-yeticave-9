@@ -28,18 +28,7 @@ else {
     exit(mysqli_error($connect));
 }
 
-$sql_categories = "SELECT * FROM categories;";
-$result_categories = mysqli_query($connect, $sql_categories);
-
-if ($result_lots) {
-    $categories = mysqli_fetch_all($result_categories, MYSQLI_ASSOC);
-    if(is_null($categories)){
-        exit(mysqli_error($connect));
-    }
-}
-else {
-    exit(mysqli_error($connect));
-}
+$categories = getCategories();
 
 $page_content = include_template('index.php', [
     'categories' => $categories,

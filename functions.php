@@ -24,6 +24,25 @@ class DbConnectionProvider
     }
 }
 
+function getCategories(): array
+{
+    $link = DbConnectionProvider::getConnection();
+    $sql = "SELECT * FROM categories";
+    $result = mysqli_query($link, $sql);
+
+    if ($result) {
+        $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        if(is_null($categories)){
+            exit(mysqli_error($link));
+        }
+    }
+    else {
+        exit(mysqli_error($link));
+    }
+
+    return $categories;
+}
+
 function format_price(float $number): string
 {
     $number = ceil($number);
