@@ -5,12 +5,14 @@ $is_auth = rand(0, 1);
 
 $user_name = 'weissfl';
 
+//Подключение информации о седенении с БД
 if (file_exists('config.php')) {
     require_once 'config.php';
 } else {
     exit('Скопируйте config.default.php в config.php и установите настройки приложения');
 }
 
+//Ресурс соединения
 class DbConnectionProvider
 {
     protected static $connection;
@@ -30,6 +32,7 @@ class DbConnectionProvider
     }
 }
 
+//Выполняет запрос
 function getData($sql)
 {
     $link = DbConnectionProvider::getConnection();
@@ -47,6 +50,7 @@ function getData($sql)
     return $result;
 }
 
+//Получает категории
 function getCategories(): array
 {
     $sql = "SELECT * FROM categories";
@@ -55,6 +59,7 @@ function getCategories(): array
     return $categories;
 }
 
+//Получает 6 последних лотов
 function getFreshLots(): array
 {
     $sql = "SELECT l.id, l.name, l.price AS start_price, l.img_url, MAX(b.price), c.NAME AS cat FROM lots AS l
@@ -69,6 +74,7 @@ function getFreshLots(): array
     return $lots;
 }
 
+//Получает данные для страницы лота
 function getPage(int $id): ?array
 {
     $link = DbConnectionProvider::getConnection();
@@ -90,6 +96,7 @@ function getPage(int $id): ?array
     return $row[0] ?? null;
 }
 
+//Форматирует цену
 function format_price(float $number): string
 {
     $number = ceil($number);
@@ -103,6 +110,7 @@ function format_price(float $number): string
     return $number;
 }
 
+//Получает маркет если до истечения лота меньше 1 часа
 function warning_finishing($time_end)
 {
     $time_diff = strtotime($time_end) - time();
@@ -114,6 +122,7 @@ function warning_finishing($time_end)
     }
 }
 
+//Получает оставшееся время жизни лота в минутах
 function lifetime_lot($time_end)
 {
     $time_diff = strtotime($time_end) - time();
