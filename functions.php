@@ -1,4 +1,6 @@
 <?php
+require('helpers.php');
+
 $is_auth = rand(0, 1);
 
 $user_name = 'weissfl';
@@ -65,6 +67,27 @@ function getFreshLots(): array
     $lots = getData($sql);
 
     return $lots;
+}
+
+function getPage(int $id): ?array
+{
+    $link = DbConnectionProvider::getConnection();
+    $sql = "SELECT l.*, c.name AS cat, MAX(b.price) AS last_price FROM lots AS l
+    JOIN categories AS c ON l.category_id = c.id
+    LEFT JOIN bets AS b ON l.id = b.lot_id
+    WHERE l.id = ?
+    GROUP BY l.id;";
+
+    $stmt = db_get_prepare_stmt($link, $sql, [$id]);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    if($result)
+    {
+        $row = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    }
+
+    return $row[0] ?? null;
 }
 
 function format_price(float $number): string

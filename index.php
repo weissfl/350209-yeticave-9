@@ -1,5 +1,4 @@
 <?php
-require('helpers.php');
 require('functions.php');
 
 $lots = getFreshLots();
