@@ -96,6 +96,19 @@ function getPage(int $id): ?array
     return $row[0] ?? null;
 }
 
+//Возвращает текущую цену
+function currentPrice($price, $last_bet)
+{
+    if(! empty($last_bet)) {
+        $current_price = $last_bet;
+    }
+    else {
+        $current_price = $price;
+    }
+
+    return $current_price;
+}
+
 //Форматирует цену
 function format_price(float $number): string
 {
