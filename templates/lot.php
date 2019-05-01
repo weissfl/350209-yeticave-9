@@ -27,13 +27,34 @@
                    '.lifetime_lot($lot["date_finish"]).'</div>';
                 } ?>
                 <div class="lot-item__cost-state">
+
+                    <?php if(isset($lot['price']) || isset($lot['last_price'])) { ?>
                     <div class="lot-item__rate">
                         <span class="lot-item__amount">Текущая цена</span>
-                        <span class="lot-item__cost">10 999</span>
+                        <span class="lot-item__cost">
+                            <?php
+                            $price = strip_tags($lot['price']);
+                            $last_bet = strip_tags($lot['last_price']);
+                            $current_price = currentPrice($price, $last_bet);
+                            echo format_price($current_price);
+                            ?>
+                        </span>
                     </div>
+                    <?php } ?>
+
+                    <?php if(isset($lot['step'])) { ?>
                     <div class="lot-item__min-cost">
-                        Мин. ставка <span>12 000 р</span>
+                        Мин. ставка <span>
+                            <?php
+                                $step = strip_tags($lot['step']);
+                                $min_bet = minBet($current_price, $step);
+
+                                echo format_price($min_bet);
+                            ?>
+                        </span>
                     </div>
+                    <?php } ?>
+
                 </div>
                 <!--<form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post" autocomplete="off">
                     <p class="lot-item__form-item form__item form__item--invalid">

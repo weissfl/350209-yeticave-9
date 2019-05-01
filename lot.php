@@ -1,6 +1,10 @@
 <?php
 require('functions.php');
 
+echo '<pre>';
+print_r(getPage($_GET['id']));
+echo '</pre>';
+
 $categories = getCategories();
 $lot = getPage($_GET['id']);
 
