@@ -62,7 +62,7 @@ function getCategories(): array
 //Получает 6 последних лотов
 function getFreshLots(): array
 {
-    $sql = "SELECT l.id, l.name, l.price AS start_price, l.img_url, MAX(b.price), c.NAME AS cat FROM lots AS l
+    $sql = "SELECT l.id, l.name, l.price AS start_price, l.img_url, MAX(b.price) AS last_price, c.NAME AS cat, l.date, l.date_finish FROM lots AS l
     LEFT JOIN bets AS b ON l.id = b.lot_id
     LEFT JOIN categories AS c ON l.category_id = c.id
     WHERE NOW() < l.date_finish AND l.winner_id IS NULL
