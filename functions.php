@@ -109,6 +109,13 @@ function currentPrice($price, $last_bet)
     return $current_price;
 }
 
+//Возвращает минимальную ставку
+function minBet($current_price, $step) {
+    $min_bet = $current_price + $step;
+
+    return $min_bet;
+}
+
 //Форматирует цену
 function format_price(float $number): string
 {
