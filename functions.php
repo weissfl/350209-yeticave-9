@@ -33,21 +33,19 @@ class DbConnectionProvider
 }
 
 //Выполняет запрос
-function getData($sql)
+function getData($sql, $data = [])
 {
     $link = DbConnectionProvider::getConnection();
-    $result = mysqli_query($link, $sql);
 
-    if ($result) {
-        $result = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        if (is_null($result)) {
-            exit(mysqli_error($link));
-        }
-    } else {
-        exit(mysqli_error($link));
+    $stmt = db_get_prepare_stmt($link, $sql, $data);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    if($result === false) {
+        exit('Ошибка при попытке получить результат prepared statement: ' . mysqli_stmt_error($stmt));
     }
 
-    return $result;
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
 //Получает категории
@@ -59,7 +57,7 @@ function getCategories(): array
     return $categories;
 }
 
-//Получает 6 последних лотов
+//Получает все лоты
 function getFreshLots(): array
 {
     $sql = "SELECT l.id, l.name, l.price AS start_price, l.img_url, MAX(b.price) AS last_price, c.NAME AS cat, l.date, l.date_finish FROM lots AS l
@@ -67,31 +65,22 @@ function getFreshLots(): array
     LEFT JOIN categories AS c ON l.category_id = c.id
     WHERE NOW() < l.date_finish AND l.winner_id IS NULL
     GROUP BY l.id
-    ORDER BY l.date DESC
-    LIMIT 6;";
+    ORDER BY l.date DESC";
     $lots = getData($sql);
 
     return $lots;
 }
 
 //Получает данные для страницы лота
-function getPage(int $id): ?array
+function getLot(int $id): ?array
 {
-    $link = DbConnectionProvider::getConnection();
-    $sql = "SELECT l.*, c.name AS cat, MAX(b.price) AS last_price FROM lots AS l
+    $sql = "SELECT l.id, l.date, l.name, l.description, l.img_url, l.price, l.date_finish, l.step, l.user_id, l.winner_id, l.category_id, c.name AS cat, MAX(b.price) AS last_price FROM lots AS l
     JOIN categories AS c ON l.category_id = c.id
     LEFT JOIN bets AS b ON l.id = b.lot_id
     WHERE l.id = ?
-    GROUP BY l.id;";
+    GROUP BY l.id";
 
-    $stmt = db_get_prepare_stmt($link, $sql, [$id]);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-
-    if($result)
-    {
-        $row = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    }
+    $row = getData($sql, [$id]);
 
     return $row[0] ?? null;
 }
@@ -111,9 +100,7 @@ function currentPrice($price, $last_bet)
 
 //Возвращает минимальную ставку
 function minBet($current_price, $step) {
-    $min_bet = $current_price + $step;
-
-    return $min_bet;
+    return $current_price + $step;
 }
 
 //Форматирует цену
@@ -135,11 +122,7 @@ function warning_finishing($time_end)
 {
     $time_diff = strtotime($time_end) - time();
 
-    if ($time_diff <= 3600) {
-        return true;
-    } else {
-        return false;
-    }
+    return $time_diff <= 3600;
 }
 
 //Получает оставшееся время жизни лота в минутах

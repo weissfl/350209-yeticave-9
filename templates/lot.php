@@ -33,7 +33,7 @@
                         <span class="lot-item__amount">Текущая цена</span>
                         <span class="lot-item__cost">
                             <?php
-                            $price = strip_tags($lot['price']);
+                            $price = $lot['price'];
                             $last_bet = strip_tags($lot['last_price']);
                             $current_price = currentPrice($price, $last_bet);
                             echo format_price($current_price);
@@ -46,7 +46,7 @@
                     <div class="lot-item__min-cost">
                         Мин. ставка <span>
                             <?php
-                                $step = strip_tags($lot['step']);
+                                $step = $lot['step'];
                                 $min_bet = minBet($current_price, $step);
 
                                 echo format_price($min_bet);
