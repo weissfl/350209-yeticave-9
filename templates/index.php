@@ -35,7 +35,7 @@
                             } ?>
                         </span>
                     <h3 class="lot__title">
-                        <a class="text-link" href="pages/lot.html">
+                        <a class="text-link" href="lot.php?id=<?php if (isset($value['id'])): echo strip_tags($value['id']); endif; ?>">
                             <?php if (isset($value['name'])) {
                                 echo strip_tags($value['name']);
                             } ?>
@@ -50,8 +50,8 @@
                                 } ?>
                             </span>
                         </div>
-                        <div class="lot__timer timer  <?php if (warning_finishing('tomorrow')): echo 'timer--finishing'; endif; ?>">
-                            <?= lifetime_lot('tomorrow'); ?>
+                        <div class="lot__timer timer  <?php if (warning_finishing($value["date_finish"])): echo 'timer--finishing'; endif; ?>">
+                            <?= lifetime_lot($value["date_finish"]) ?>
                         </div>
                     </div>
                 </div>
