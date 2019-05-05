@@ -32,7 +32,7 @@ class DbConnectionProvider
     }
 }
 
-//Выполняет запрос
+//Выполняет запрос на получние данных
 function getData($sql, $data = [])
 {
     $link = DbConnectionProvider::getConnection();
@@ -46,6 +46,18 @@ function getData($sql, $data = [])
     }
 
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+//Выполняет запрос на добавлнеие записи
+function insertData($sql, $data = [])
+{
+    $link = DbConnectionProvider::getConnection();
+
+    $stmt = db_get_prepare_stmt($link, $sql, $data);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    return mysqli_insert_id($link);
 }
 
 //Получает категории
@@ -83,6 +95,15 @@ function getLot(int $id): ?array
     $row = getData($sql, [$id]);
 
     return $row[0] ?? null;
+}
+
+//Добавление лота
+function insertLot($data)
+{
+    $sql = "INSERT INTO lots (name, category_id, description, price, step, date_finish, user_id, img_url, date)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+
+    return insertData($sql, $data);
 }
 
 //Возвращает текущую цену
@@ -125,7 +146,7 @@ function warning_finishing($time_end)
     return $time_diff <= 3600;
 }
 
-//Получает оставшееся время жизни лота в минутах
+//Получает оставшееся время жизни лота в формате ЧЧ:ММ
 function lifetime_lot($time_end)
 {
     $time_diff = strtotime($time_end) - time();
@@ -136,4 +157,9 @@ function lifetime_lot($time_end)
     $time = $hours . ':' . $minutes;
 
     return $time;
+}
+
+//Определяет что введенная дата больше текущей на сутки
+function validDate($time) {
+    return (strtotime($time) - time()) > 86400;
 }
