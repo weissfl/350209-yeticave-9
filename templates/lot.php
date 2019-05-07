@@ -33,9 +33,7 @@
                         <span class="lot-item__amount">Текущая цена</span>
                         <span class="lot-item__cost">
                             <?php
-                            $price = $lot['price'];
-                            $last_bet = strip_tags($lot['last_price']);
-                            $current_price = currentPrice($price, $last_bet);
+                            $current_price = currentPrice($lot['price'], $lot['last_price']);
                             echo format_price($current_price);
                             ?>
                         </span>

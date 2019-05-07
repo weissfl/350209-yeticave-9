@@ -97,6 +97,14 @@ function getLot(int $id): ?array
     return $row[0] ?? null;
 }
 
+//Проверяет существование e-mail в базе
+function checkEmail($email)
+{
+    $sql = "SELECT email email FROM users WHERE email=?;";
+
+    return getData($sql, [$email]) !== [];
+}
+
 //Добавление лота
 function insertLot($data)
 {
@@ -106,17 +114,19 @@ function insertLot($data)
     return insertData($sql, $data);
 }
 
+//Добавление пользователя
+function insertUser($data)
+{
+    $sql = "INSERT INTO users (email, password, name, contacts, avatar_url, date_reg)
+    VALUES (?, ?, ?, ?, ?, NOW())";
+
+    return insertData($sql, $data);
+}
+
 //Возвращает текущую цену
 function currentPrice($price, $last_bet)
 {
-    if(! empty($last_bet)) {
-        $current_price = $last_bet;
-    }
-    else {
-        $current_price = $price;
-    }
-
-    return $current_price;
+    return $last_bet ?? $price;
 }
 
 //Возвращает минимальную ставку

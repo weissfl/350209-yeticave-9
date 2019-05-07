@@ -1,4 +1,4 @@
-<form class="form form--add-lot <?php if(isset($errors)): echo 'form--invalid'; endif; ?>" action="../add.php" method="post" enctype="multipart/form-data"> <!-- form--invalid -->
+<form class="form form--add-lot <?php if(isset($errors)): echo 'form--invalid'; endif; ?>" action="add.php" method="post" enctype="multipart/form-data"> <!-- form--invalid -->
     <h2>Добавление лота</h2>
     <div class="form__container-two">
         <div class="form__item <?php if(isset($errors['lot-name'])): echo 'form__item--invalid'; endif; ?>">
