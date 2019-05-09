@@ -24,11 +24,11 @@
 
             <nav class="user-menu">
 
-                <?php if ($is_auth === 1): ?>
+                <?php if (isset($_SESSION['user'])): ?>
                     <div class="user-menu__logged">
-                        <p><?= strip_tags($user_name); ?></p>
+                        <p><?= strip_tags($_SESSION['user']['name']); ?></p>
                         <a class="user-menu__bets" href="pages/my-bets.html">Мои ставки</a>
-                        <a class="user-menu__logout" href="#">Выход</a>
+                        <a class="user-menu__logout" href="/logout.php">Выход</a>
                     </div>
 
                 <?php else: ?>
@@ -37,7 +37,7 @@
                             <a href="/sign-up.php">Регистрация</a>
                         </li>
                         <li class="user-menu__item">
-                            <a href="#">Вход</a>
+                            <a href="/login.php">Вход</a>
                         </li>
                     </ul>
                 <?php endif; ?>

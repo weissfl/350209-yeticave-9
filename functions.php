@@ -100,9 +100,29 @@ function getLot(int $id): ?array
 //Проверяет существование e-mail в базе
 function checkEmail($email)
 {
-    $sql = "SELECT email email FROM users WHERE email=?;";
+    $sql = "SELECT email FROM users WHERE email=?";
 
     return getData($sql, [$email]) !== [];
+}
+
+//Проверяет соответствие введённого пароля
+function checkPassword($email, $password) {
+
+    $sql = "SELECT password FROM users WHERE email=?";
+
+    $password_hash = getData($sql, [$email]);
+
+    return password_verify($password, $password_hash[0]['password']);
+}
+
+//Возвращает массив данных пользователя по его e-mal
+function getUser($email): array
+{
+    $sql = "SELECT id, date_reg, email, name, avatar_url, contacts FROM users WHERE email=?";
+
+    $user = getData($sql, [$email]);
+
+    return $user[0] ?? null;;
 }
 
 //Добавление лота

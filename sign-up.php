@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     foreach ($sign_up as $field => $value) {
 
-        if ($field == "email" && ! empty($value)) {
+        if ($field === "email" && ! empty($value)) {
             if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
                 $errors[$field] = 'E-mail должен быть корректным';
             }
@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if(isset($sign_up['password'])) {
-        $sign_up['password'] =  password_hash($sign_up['password'], PASSWORD_DEFAULT);
+        $sign_up['password'] = password_hash($sign_up['password'], PASSWORD_DEFAULT);
     }
 
     if (count($errors) > 0) {

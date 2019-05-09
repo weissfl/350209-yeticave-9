@@ -36,7 +36,7 @@ CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   date_reg DATETIME NOT NULL,
   email CHAR(128) NOT NULL UNIQUE,
-  name CHAR(128) NOT NULL UNIQUE,
+  name CHAR(128) NOT NULL,
   password CHAR(64) NOT NULL,
   avatar_url CHAR(255),
   contacts TEXT NOT NULL

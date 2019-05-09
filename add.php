@@ -1,4 +1,5 @@
 <?php
+session_start();
 require('functions.php');
 
 $categories = getCategories();
@@ -90,6 +91,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
        $id = insertLot([$lot['lot-name'], $lot['category'], $lot['message'], $lot['lot-rate'], $lot['lot-step'], $lot['lot-date'], '22', $lot['lot-img']]);
        header("Location: lot.php?id=" . $id);
     }
+}
+elseif (!isset($_SESSION['user'])) {
+    http_response_code(403);
+    $page_content = include_template('403.php');
 }
 else {
     $page_content = include_template('add.php', ['categories' => $categories]);
