@@ -11,7 +11,7 @@ $page_content = include_template('index.php', [
     'ads' => $lots
 ]);
 
-$layout_content = include_template('layout.php', [
+$layout_content = include_template('layout_index.php', [
     'categories' => $categories,
     'content' => $page_content,
     'is_auth' => $is_auth,

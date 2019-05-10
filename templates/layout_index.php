@@ -5,7 +5,6 @@
     <title><?= strip_tags($title); ?></title>
     <link href="../css/normalize.min.css" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
-    <link href="../css/flatpickr.min.css" rel="stylesheet">
 </head>
 <body>
 <div class="page-wrapper">
@@ -13,7 +12,7 @@
     <header class="main-header">
         <div class="main-header__container container">
             <h1 class="visually-hidden">YetiCave</h1>
-            <a href="/" class="main-header__logo">
+            <a class="main-header__logo">
                 <img src="../img/logo.svg" width="160" height="39" alt="Логотип компании YetiCave">
             </a>
             <form class="main-header__search" method="get" action="https://echo.htmlacademy.ru" autocomplete="off">
@@ -48,18 +47,7 @@
         </div>
     </header>
 
-    <main>
-        <nav class="nav">
-            <ul class="nav__list container">
-                <?php foreach ($categories as $value): ?>
-                    <li class="nav__item">
-                        <a href="pages/all-lots.html">
-                            <?= strip_tags($value["name"]); ?>
-                        </a>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        </nav>
+    <main class="container">
         <?php if (isset($content)): echo $content; endif; ?>
     </main>
 </div>

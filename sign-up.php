@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
     }
     else {
-        insertUser([$sign_up['email'], $sign_up['password'], $sign_up['name'], $sign_up['message'], $sign_up['avatar']  ]);
+        insertUser([$sign_up['email'], $sign_up['password'], $sign_up['name'], $sign_up['message'], $sign_up['avatar']]);
         header("Location: login.php");
     }
 }

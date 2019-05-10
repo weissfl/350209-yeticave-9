@@ -41,7 +41,7 @@ function getData($sql, $data = [])
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
 
-    if($result === false) {
+    if ($result === false) {
         exit('Ошибка при попытке получить результат prepared statement: ' . mysqli_stmt_error($stmt));
     }
 
@@ -57,7 +57,7 @@ function insertData($sql, $data = [])
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
 
-    return mysqli_insert_id($link);
+    return $result;
 }
 
 //Получает категории
@@ -106,13 +106,17 @@ function checkEmail($email)
 }
 
 //Проверяет соответствие введённого пароля
-function checkPassword($email, $password) {
-
+function checkPassword($email, $password)
+{
     $sql = "SELECT password FROM users WHERE email=?";
 
     $password_hash = getData($sql, [$email]);
 
-    return password_verify($password, $password_hash[0]['password']);
+    if (empty($password_hash[0]['password'])) {
+        return false;
+    } else {
+        return password_verify($password, $password_hash[0]['password']);
+    }
 }
 
 //Возвращает массив данных пользователя по его e-mal
@@ -122,7 +126,7 @@ function getUser($email): array
 
     $user = getData($sql, [$email]);
 
-    return $user[0] ?? null;;
+    return $user[0] ?? null;
 }
 
 //Добавление лота
@@ -143,6 +147,15 @@ function insertUser($data)
     return insertData($sql, $data);
 }
 
+//Добавление ставку
+function insertBet($data)
+{
+    $sql = "INSERT INTO bets (price, user_id, lot_id, date)
+    VALUES (?, ?, ?, NOW())";
+
+    return insertData($sql, $data);
+}
+
 //Возвращает текущую цену
 function currentPrice($price, $last_bet)
 {
@@ -150,7 +163,8 @@ function currentPrice($price, $last_bet)
 }
 
 //Возвращает минимальную ставку
-function minBet($current_price, $step) {
+function minBet($current_price, $step)
+{
     return $current_price + $step;
 }
 
@@ -190,6 +204,7 @@ function lifetime_lot($time_end)
 }
 
 //Определяет что введенная дата больше текущей на сутки
-function validDate($time) {
+function validDate($time)
+{
     return (strtotime($time) - time()) > 86400;
 }
