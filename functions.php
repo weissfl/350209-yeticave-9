@@ -57,6 +57,10 @@ function insertData($sql, $data = [])
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
 
+    if (mysqli_errno($link) !== 0) {
+        exit('Ошибка получния разультата из подготовленного выражения: ' . mysqli_errno($link));
+    }
+
     return $result;
 }
 
@@ -114,9 +118,9 @@ function checkPassword($email, $password)
 
     if (empty($password_hash[0]['password'])) {
         return false;
-    } else {
-        return password_verify($password, $password_hash[0]['password']);
     }
+
+    return password_verify($password, $password_hash[0]['password']);
 }
 
 //Возвращает массив данных пользователя по его e-mal
@@ -127,6 +131,20 @@ function getUser($email): array
     $user = getData($sql, [$email]);
 
     return $user[0] ?? null;
+}
+
+//Возвращает информацию о ставке по ip пользователя
+function getBets($user_id)
+{
+    $sql = "SELECT b.date AS bet_date, b.price AS bet_cost, l.id AS lot_id, l.name AS lot_name, l.img_url AS lot_img, l.date_finish AS lot_date_finish, l.winner_id AS lot_winner, c.name AS cat_name, u.contacts AS user_contacts
+    FROM bets AS b
+    LEFT JOIN lots AS l ON l.id = b.lot_id
+    LEFT JOIN categories AS c ON c.id = l.category_id
+    LEFT JOIN users AS u ON u.id = l.winner_id
+    WHERE b.user_id = ?
+    ORDER BY b.date DESC";
+
+    return getData($sql, [$user_id]);
 }
 
 //Добавление лота
@@ -190,15 +208,60 @@ function warning_finishing($time_end)
     return $time_diff <= 3600;
 }
 
-//Получает оставшееся время жизни лота в формате ЧЧ:ММ
+//Получает оставшееся время жизни лота
 function lifetime_lot($time_end)
 {
-    $time_diff = strtotime($time_end) - time();
+    $time_difference = strtotime($time_end) - time();
 
-    $hours = floor($time_diff / 3600);
-    $minutes = floor(($time_diff % 3600) / 60);
+    $hours = floor($time_difference / 3600);
+    $minutes = floor(($time_difference % 3600) / 60);
 
-    $time = $hours . ':' . $minutes;
+    if ($minutes < 10) {
+        $minutes = '0' . $minutes;
+    }
+
+    return $hours . ':' . $minutes;
+}
+
+//Возвращает время создания ставки
+function createdTimeAgo($created_time)
+{
+    $time = '';
+
+    $time_difference = time() - strtotime($created_time);
+
+    $hours = floor($time_difference / 3600);
+    $minutes = floor(($time_difference % 3600) / 60);
+
+    $minutes_plural = get_noun_plural_form(
+        $minutes,
+        'минута',
+        'минуты',
+        'минут'
+    );
+
+    $hours_plural = get_noun_plural_form(
+        $hours,
+        'час',
+        'часа',
+        'часов'
+    );
+
+    if ($time_difference < 60) {
+        $time = 'Только что';
+    } elseif ($time_difference < 3600) {
+        $time = $minutes . ' ' . $minutes_plural . ' назад';
+    } elseif ($time_difference < 7200) {
+        $time = 'Час ' . (($minutes != 0) ? ($minutes . ' ' . $minutes_plural) : '') . ' назад';
+    } elseif ($time_difference >= 7200 && $time_difference < 86400) {
+        $time = $hours . ' ' . $hours_plural . ' ' . $minutes . ' ' . $minutes_plural . ' назад';
+    } elseif ($time_difference < 172800) {
+        $time = 'Вчера, в ' . date('H:i', strtotime($created_time));
+    } elseif ($time_difference < 259200) {
+        $time = 'Позавчера, в ' . date('H:i', strtotime($created_time));
+    } else {
+        $time = date('d.m.y', strtotime($created_time)) . ' в ' . date('H:i', strtotime($created_time));
+    }
 
     return $time;
 }
