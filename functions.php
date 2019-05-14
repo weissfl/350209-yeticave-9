@@ -140,7 +140,7 @@ function getBets($user_id)
     FROM bets AS b
     LEFT JOIN lots AS l ON l.id = b.lot_id
     LEFT JOIN categories AS c ON c.id = l.category_id
-    LEFT JOIN users AS u ON u.id = l.winner_id
+    LEFT JOIN users AS u ON u.id = l.user_id
     WHERE b.user_id = ?
     ORDER BY b.date DESC";
 

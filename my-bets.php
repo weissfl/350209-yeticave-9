@@ -2,6 +2,11 @@
 session_start();
 require('functions.php');
 
+if (!isset($_SESSION['user'])) {
+    http_response_code(403);
+    exit();
+}
+
 $categories = getCategories();
 
 $bets = getBets($_SESSION['user']['id']);

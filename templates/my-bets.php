@@ -5,10 +5,10 @@
         <?php foreach ($bets as $bet):
             $class = '';
 
-            if (warning_finishing($bet["lot_date_finish"])) {
+            if ($bet["lot_winner"] === $_SESSION['user']['id']) {
+                $class = 'rates__item--win';
+            } elseif (warning_finishing($bet["lot_date_finish"])) {
                 $class = 'rates__item--end"';
-            } elseif ($bet["lot_winner"] === $_SESSION['user']['id']) {
-                $class = 'rates__item--winrates__title';
             }
             ?>
             <tr class="rates__item <?= $class ?>">
@@ -28,7 +28,7 @@
                             </a>
                         </h3>
 
-                        <?php if (isset($bet['user_contacts'])) {
+                        <?php if (isset($bet['user_contacts']) && $bet["lot_winner"] === $_SESSION['user']['id']) {
                             echo '<p>' . strip_tags($bet['user_contacts']) . '</p>';
                         } ?>
                     </div>
@@ -40,10 +40,10 @@
                 </td>
                 <td class="rates__timer">
                     <?php if (isset($bet['lot_date_finish'])) {
-                        if (warning_finishing($bet["lot_date_finish"])) {
-                            echo '<div class="timer timer--end">Торги окончены</div>';
-                        } elseif ($bet["lot_winner"] === $_SESSION['user']['id']) {
+                        if ($bet["lot_winner"] === $_SESSION['user']['id']) {
                             echo '<div class="timer timer--win">Ставка выиграла</div>';
+                        } elseif (warning_finishing($bet["lot_date_finish"])) {
+                            echo '<div class="timer timer--end">Торги окончены</div>';
                         } else {
                             echo '<div class="timer">' . lifetime_lot($bet['lot_date_finish']) . '</div>';
                         }
