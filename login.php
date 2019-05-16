@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    if(count($errors) === 0) {
+    if (count($errors) === 0) {
         $check_email = checkEmail($login['email']);
 
         if ($check_email) {
@@ -36,15 +36,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    if (count($errors) > 0){
+    if (count($errors) > 0) {
         $page_content = include_template('login.php', [
             'categories' => $categories,
             'errors' => $errors,
             'sign_up' => $login
         ]);
     }
-}
-else {
+} else {
     $page_content = include_template('login.php', ['categories' => $categories]);
 }
 
