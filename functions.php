@@ -249,15 +249,15 @@ function createdTimeAgo($created_time)
 
     if ($time_difference < 60) {
         $time = 'Только что';
-    } elseif ($time_difference < 60*60) {
+    } elseif ($time_difference < 60 * 60) {
         $time = $minutes . ' ' . $minutes_plural . ' назад';
-    } elseif ($time_difference < 60*60*2) {
+    } elseif ($time_difference < 60 * 60 * 2) {
         $time = 'Час ' . (($minutes != 0) ? ($minutes . ' ' . $minutes_plural) : '') . ' назад';
-    } elseif ($time_difference >= 60*60*2 && $time_difference < 24*60*60) {
+    } elseif ($time_difference >= 60 * 60 * 2 && $time_difference < 24 * 60 * 60) {
         $time = $hours . ' ' . $hours_plural . ' ' . $minutes . ' ' . $minutes_plural . ' назад';
-    } elseif ($time_difference < 24*60*60*2) {
+    } elseif ($time_difference < 24 * 60 * 60 * 2) {
         $time = 'Вчера, в ' . date('H:i', strtotime($created_time));
-    } elseif ($time_difference < 24*60*60*3) {
+    } elseif ($time_difference < 24 * 60 * 60 * 3) {
         $time = 'Позавчера, в ' . date('H:i', strtotime($created_time));
     } else {
         $time = date('d.m.y', strtotime($created_time)) . ' в ' . date('H:i', strtotime($created_time));
@@ -266,8 +266,11 @@ function createdTimeAgo($created_time)
     return $time;
 }
 
-//Определяет что введенная дата больше текущей на сутки
+//Определяет что дата больше минимум на один день
 function validDate($time)
 {
-    return (strtotime($time) - time()) > 86400;
+    $time = strtotime($time);
+    $time_tomorrow = strtotime('+1 day 00:00:00');
+
+    return $time >= $time_tomorrow;
 }

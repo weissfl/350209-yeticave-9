@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($field === "lot-date" && !empty($value)) {
             if ($field === "lot-date" && !validDate($value)) {
-                $errors[$field] = 'Дата окончания торгов, должна быть больше текущей, минимум на сутки';
+                $errors[$field] = 'Указанная дата должна быть больше текущей даты, хотя бы на один день';
             }
 
             if ($field === "lot-date" && !is_date_valid($value)) {
