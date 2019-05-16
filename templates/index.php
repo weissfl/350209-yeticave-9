@@ -35,7 +35,8 @@
                             } ?>
                         </span>
                     <h3 class="lot__title">
-                        <a class="text-link" href="lot.php?id=<?php if (isset($value['id'])): echo strip_tags($value['id']); endif; ?>">
+                        <a class="text-link"
+                           href="lot.php?id=<?php if (isset($value['id'])): echo strip_tags($value['id']); endif; ?>">
                             <?php if (isset($value['name'])) {
                                 echo strip_tags($value['name']);
                             } ?>

@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (!($file_type === "image/png" || $file_type === "image/jpeg")) {
             $errors['lot-img'] = "Изображение должно быть в формате png или jpeg";
-        } elseif(count($errors) === 0) {
+        } elseif (count($errors) === 0) {
             move_uploaded_file($tmp_path, 'uploads/' . $name);
             $lot['lot-img'] = 'uploads/' . $name;
         }
