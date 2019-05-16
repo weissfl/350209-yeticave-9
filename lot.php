@@ -1,6 +1,5 @@
 <?php
-session_start();
-require('functions.php');
+require_once('init.php');
 
 $categories = getCategories();
 

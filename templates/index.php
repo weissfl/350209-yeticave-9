@@ -50,7 +50,7 @@
                                 } ?>
                             </span>
                         </div>
-                        <div class="lot__timer timer  <?php if (warning_finishing($value["date_finish"])): echo 'timer--finishing'; endif; ?>">
+                        <div class="lot__timer timer  <?php if (warningOneHourLeft($value["date_finish"])): echo 'timer--finishing'; endif; ?>">
                             <?= lifetime_lot($value["date_finish"]) ?>
                         </div>
                     </div>

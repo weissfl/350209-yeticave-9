@@ -25,7 +25,7 @@
             <?php if(isset($_SESSION['user'])) { ?>
             <div class="lot-item__state">
                 <?php if (isset($lot["date_finish"])) {
-                   echo '<div class="lot-item__timer timer '.((warning_finishing($lot["date_finish"])) ? 'timer--finishing' : '').'">
+                   echo '<div class="lot-item__timer timer '.((warningOneHourLeft($lot["date_finish"])) ? 'timer--finishing' : '').'">
                    '.lifetime_lot($lot["date_finish"]).'</div>';
                 } ?>
                 <div class="lot-item__cost-state">
