@@ -1,8 +1,6 @@
 <?php
 require_once('init.php');
 
-$categories = getCategories();
-
 if (isset($_GET['id']) && !empty($_GET['id']) && ($lot = getLot($_GET['id']))) {
     $page_content = include_template('lot.php', ['lot' => $lot]);
 } else {

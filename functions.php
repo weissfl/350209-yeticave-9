@@ -96,6 +96,30 @@ function getLot(int $id): ?array
     return $row[0] ?? null;
 }
 
+//Возвращает количество лотов в результате запроса
+function countSearchLots($keyword): ?array
+{
+    $sql = "SELECT COUNT(*) AS count_page
+    FROM lots AS l
+    JOIN categories AS c ON l.category_id = c.id
+    WHERE NOW() < l.date_finish AND l.winner_id IS NULL AND  MATCH(l.NAME, l.description) AGAINST(?)
+    ORDER BY l.date DESC";
+
+    return getData($sql, [$keyword]);
+}
+
+//Возвращает результат поиска по лотам
+function searchLots($date): ?array
+{
+    $sql = "SELECT l.id, l.name, l.price AS start_price, l.img_url, c.NAME AS cat, l.date, l.date_finish
+    FROM lots AS l
+    JOIN categories AS c ON l.category_id = c.id
+    WHERE NOW() < l.date_finish AND l.winner_id IS NULL AND  MATCH(l.NAME, l.description) AGAINST(?)
+    ORDER BY l.date DESC LIMIT ? OFFSET ?";
+
+    return getData($sql, $date);
+}
+
 //Проверяет существование e-mail в базе
 function checkEmail($email)
 {

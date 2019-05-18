@@ -6,8 +6,6 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
-$categories = getCategories();
-
 $bets = getBets($_SESSION['user']['id']);
 
 $page_content = include_template('my-bets.php', [

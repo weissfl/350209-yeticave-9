@@ -1,8 +1,6 @@
 <?php
 require_once('init.php');
 
-$categories = getCategories();
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $required_fields = [

@@ -1,8 +1,6 @@
 <?php
 require_once('init.php');
 
-$categories = getCategories();
-
 if (!isset($_SESSION['user'])) {
     http_response_code(403);
     exit();
