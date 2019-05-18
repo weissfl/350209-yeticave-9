@@ -1,10 +1,7 @@
 <?php
-session_start();
-require('functions.php');
+require_once('init.php');
 
 $lots = getFreshLots();
-
-$categories = getCategories();
 
 $page_content = include_template('index.php', [
     'categories' => $categories,

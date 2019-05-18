@@ -1,9 +1,4 @@
 <?php
-require('helpers.php');
-
-$is_auth = rand(0, 1);
-
-$user_name = 'weissfl';
 
 //Подключение информации о седенении с БД
 if (file_exists('config.php')) {
@@ -58,10 +53,10 @@ function insertData($sql, $data = [])
     $result = mysqli_stmt_get_result($stmt);
 
     if (mysqli_errno($link) !== 0) {
-        exit('Ошибка получния разультата из подготовленного выражения: ' . mysqli_errno($link));
+        exit('Ошибка получния разультата из подготовленного выражения: ' . mysqli_error($link));
     }
 
-    return $result;
+    return mysqli_insert_id($link);
 }
 
 //Получает категории
@@ -99,6 +94,30 @@ function getLot(int $id): ?array
     $row = getData($sql, [$id]);
 
     return $row[0] ?? null;
+}
+
+//Возвращает количество лотов в результате запроса
+function countSearchLots($keyword): ?array
+{
+    $sql = "SELECT COUNT(*) AS count_page
+    FROM lots AS l
+    JOIN categories AS c ON l.category_id = c.id
+    WHERE NOW() < l.date_finish AND l.winner_id IS NULL AND  MATCH(l.NAME, l.description) AGAINST(?)
+    ORDER BY l.date DESC";
+
+    return getData($sql, [$keyword]);
+}
+
+//Возвращает результат поиска по лотам
+function searchLots($date): ?array
+{
+    $sql = "SELECT l.id, l.name, l.price AS start_price, l.img_url, c.NAME AS cat, l.date, l.date_finish
+    FROM lots AS l
+    JOIN categories AS c ON l.category_id = c.id
+    WHERE NOW() < l.date_finish AND l.winner_id IS NULL AND  MATCH(l.NAME, l.description) AGAINST(?)
+    ORDER BY l.date DESC LIMIT ? OFFSET ?";
+
+    return getData($sql, $date);
 }
 
 //Проверяет существование e-mail в базе
@@ -200,12 +219,17 @@ function format_price(float $number): string
     return $number;
 }
 
-//Получает маркет если до истечения лота меньше 1 часа
-function warning_finishing($time_end)
+//Возвращает маркер если до истечения лота меньше 1 часа
+function warningOneHourLeft($time_end)
 {
     $time_diff = strtotime($time_end) - time();
 
     return $time_diff <= 3600;
+}
+
+function warningFinishing($time_end)
+{
+    return (strtotime($time_end) - time()) < 0;
 }
 
 //Получает оставшееся время жизни лота
@@ -249,15 +273,15 @@ function createdTimeAgo($created_time)
 
     if ($time_difference < 60) {
         $time = 'Только что';
-    } elseif ($time_difference < 3600) {
+    } elseif ($time_difference < 60 * 60) {
         $time = $minutes . ' ' . $minutes_plural . ' назад';
-    } elseif ($time_difference < 7200) {
+    } elseif ($time_difference < 60 * 60 * 2) {
         $time = 'Час ' . (($minutes != 0) ? ($minutes . ' ' . $minutes_plural) : '') . ' назад';
-    } elseif ($time_difference >= 7200 && $time_difference < 86400) {
+    } elseif ($time_difference >= 60 * 60 * 2 && $time_difference < 24 * 60 * 60) {
         $time = $hours . ' ' . $hours_plural . ' ' . $minutes . ' ' . $minutes_plural . ' назад';
-    } elseif ($time_difference < 172800) {
+    } elseif ($time_difference < 24 * 60 * 60 * 2) {
         $time = 'Вчера, в ' . date('H:i', strtotime($created_time));
-    } elseif ($time_difference < 259200) {
+    } elseif ($time_difference < 24 * 60 * 60 * 3) {
         $time = 'Позавчера, в ' . date('H:i', strtotime($created_time));
     } else {
         $time = date('d.m.y', strtotime($created_time)) . ' в ' . date('H:i', strtotime($created_time));
@@ -266,8 +290,11 @@ function createdTimeAgo($created_time)
     return $time;
 }
 
-//Определяет что введенная дата больше текущей на сутки
+//Определяет что дата больше минимум на один день
 function validDate($time)
 {
-    return (strtotime($time) - time()) > 86400;
+    $time = strtotime($time);
+    $time_tomorrow = strtotime('+1 day 00:00:00');
+
+    return $time >= $time_tomorrow;
 }

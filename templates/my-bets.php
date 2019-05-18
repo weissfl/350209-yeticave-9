@@ -7,7 +7,7 @@
 
             if ($bet["lot_winner"] === $_SESSION['user']['id']) {
                 $class = 'rates__item--win';
-            } elseif (warning_finishing($bet["lot_date_finish"])) {
+            } elseif (warningFinishing($bet["lot_date_finish"])) {
                 $class = 'rates__item--end"';
             }
             ?>
@@ -15,7 +15,7 @@
                 <td class="rates__info">
                     <div class="rates__img">
                         <?php if (isset($bet['lot_img'])) { ?>
-                            <img src="../<?php echo $bet['lot_img']; ?>" width="54" height="40"
+                            <img src="/<?php echo $bet['lot_img']; ?>" width="54" height="40"
                                  alt="<?php echo strip_tags($bet['lot_name']); ?>">
                         <?php } ?>
                     </div>
@@ -42,12 +42,15 @@
                     <?php if (isset($bet['lot_date_finish'])) {
                         if ($bet["lot_winner"] === $_SESSION['user']['id']) {
                             echo '<div class="timer timer--win">Ставка выиграла</div>';
-                        } elseif (warning_finishing($bet["lot_date_finish"])) {
+                        } elseif (warningFinishing($bet["lot_date_finish"])) {
                             echo '<div class="timer timer--end">Торги окончены</div>';
+                        } elseif (warningOneHourLeft($bet["lot_date_finish"])) {
+                            echo '<div class="timer timer--finishing">' . lifetime_lot($bet['lot_date_finish']) . '</div>';
                         } else {
-                            echo '<div class="timer">' . lifetime_lot($bet['lot_date_finish']) . '</div>';
+                            echo '<div class="timer  ">' . lifetime_lot($bet['lot_date_finish']) . '</div>';
                         }
-                    } ?>
+                    }
+                    ?>
                 </td>
                 <td class="rates__price">
                     <?php if (isset($bet['bet_cost'])) { ?>

@@ -1,7 +1,5 @@
 <?php
-require('functions.php');
-
-$categories = getCategories();
+require_once('init.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -77,8 +75,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $layout_content = include_template('layout.php', [
     'categories' => $categories,
     'content' => $page_content,
-    'is_auth' => $is_auth,
-    'user_name' => $user_name,
     'title' => 'Регистрация нового аккаунта - Yeti Cave'
 ]);
 

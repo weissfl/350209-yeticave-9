@@ -1,8 +1,5 @@
 <?php
-session_start();
-require('functions.php');
-
-$categories = getCategories();
+require_once('init.php');
 
 if (isset($_GET['id']) && !empty($_GET['id']) && ($lot = getLot($_GET['id']))) {
     $page_content = include_template('lot.php', ['lot' => $lot]);
