@@ -1,12 +1,5 @@
 <?php
 
-//Подключение информации о седенении с БД
-if (file_exists('config.php')) {
-    require_once 'config.php';
-} else {
-    exit('Скопируйте config.default.php в config.php и установите настройки приложения');
-}
-
 //Ресурс соединения
 class DbConnectionProvider
 {
@@ -50,13 +43,29 @@ function insertData($sql, $data = [])
 
     $stmt = db_get_prepare_stmt($link, $sql, $data);
     mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
+    mysqli_stmt_get_result($stmt);
 
     if (mysqli_errno($link) !== 0) {
         exit('Ошибка получния разультата из подготовленного выражения: ' . mysqli_error($link));
     }
 
     return mysqli_insert_id($link);
+}
+
+//Выполняет запрос на добавлнеие записи
+function updateData($sql, $data = [])
+{
+    $link = DbConnectionProvider::getConnection();
+
+    $stmt = db_get_prepare_stmt($link, $sql, $data);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_get_result($stmt);
+
+    if (mysqli_errno($link) !== 0) {
+        exit('Ошибка получния разультата из подготовленного выражения: ' . mysqli_error($link));
+    }
+
+    return true;
 }
 
 //Получает категории
@@ -77,9 +86,40 @@ function getFreshLots(): array
     WHERE NOW() < l.date_finish AND l.winner_id IS NULL
     GROUP BY l.id
     ORDER BY l.date DESC";
-    $lots = getData($sql);
 
-    return $lots;
+    return getData($sql);
+}
+
+//Получает количество лотов в категории по её ID
+function getCountСategoryLots($id)
+{
+    $sql = "SELECT COUNT(*) AS count FROM lots 
+    WHERE category_id = ? AND NOW() < date_finish AND winner_id IS NULL";
+
+    $result = getData($sql, [$id]);
+
+    return $result[0]['count'] ?? null;
+}
+
+//Получает лоты для одной категории
+function getСategoryLots($data): array
+{
+    $sql = "SELECT l.id, l.name, l.price AS start_price, l.img_url, l.date, l.date_finish FROM lots AS l
+    WHERE NOW() < l.date_finish AND l.winner_id IS NULL AND l.category_id = ?
+    ORDER BY l.date DESC LIMIT ? OFFSET ?";
+
+    return getData($sql, $data);
+}
+
+//Получает имя категории по её ID
+function getNameCategory(int $id)
+{
+    $sql = "SELECT name FROM categories
+    WHERE id = ?";
+
+    $result = getData($sql, [$id]);
+
+    return $result[0]['name'] ?? null;
 }
 
 //Получает данные для страницы лота
@@ -96,8 +136,19 @@ function getLot(int $id): ?array
     return $row[0] ?? null;
 }
 
+//Получает историю ставок
+function getHistoryBets(int $lot_id): array
+{
+    $sql = "SELECT b.date, b.price, b.user_id, b.lot_id, u.name FROM bets AS b
+    JOIN users AS u ON u.id = b.user_id
+    WHERE lot_id = ?
+    ORDER BY b.date DESC;";
+
+    return getData($sql, [$lot_id]);
+}
+
 //Возвращает количество лотов в результате запроса
-function countSearchLots($keyword): ?array
+function countSearchLots($keyword)
 {
     $sql = "SELECT COUNT(*) AS count_page
     FROM lots AS l
@@ -105,11 +156,13 @@ function countSearchLots($keyword): ?array
     WHERE NOW() < l.date_finish AND l.winner_id IS NULL AND  MATCH(l.NAME, l.description) AGAINST(?)
     ORDER BY l.date DESC";
 
-    return getData($sql, [$keyword]);
+    $count = getData($sql, [$keyword]);
+
+    return $count[0]['count_page'] ?? null;
 }
 
 //Возвращает результат поиска по лотам
-function searchLots($date): ?array
+function searchLots($data): ?array
 {
     $sql = "SELECT l.id, l.name, l.price AS start_price, l.img_url, c.NAME AS cat, l.date, l.date_finish
     FROM lots AS l
@@ -117,7 +170,7 @@ function searchLots($date): ?array
     WHERE NOW() < l.date_finish AND l.winner_id IS NULL AND  MATCH(l.NAME, l.description) AGAINST(?)
     ORDER BY l.date DESC LIMIT ? OFFSET ?";
 
-    return getData($sql, $date);
+    return getData($sql, $data);
 }
 
 //Проверяет существование e-mail в базе
@@ -152,7 +205,7 @@ function getUser($email): array
     return $user[0] ?? null;
 }
 
-//Возвращает информацию о ставке по ip пользователя
+//Возвращает информацию о ставке по id пользователя
 function getBets($user_id)
 {
     $sql = "SELECT b.date AS bet_date, b.price AS bet_cost, l.id AS lot_id, l.name AS lot_name, l.img_url AS lot_img, l.date_finish AS lot_date_finish, l.winner_id AS lot_winner, c.name AS cat_name, u.contacts AS user_contacts
@@ -191,6 +244,29 @@ function insertBet($data)
     VALUES (?, ?, ?, NOW())";
 
     return insertData($sql, $data);
+}
+
+//Возвращает список победителей
+function getWinner()
+{
+    $sql = "SELECT b.user_id, b.lot_id, l.NAME AS lot_name, u.NAME AS username, u.email
+            FROM bets AS b
+            JOIN lots AS l ON b.lot_id = l.id
+            JOIN users AS u ON u.id = b.user_id
+            WHERE ISNULL(l.winner_id) AND l.date_finish < NOW()
+            GROUP BY b.user_id, b.lot_id
+            HAVING MAX(b.date)";
+
+    return getData($sql);
+}
+
+//Записывает победителя в табицу лота
+
+function setWinner($data)
+{
+    $sql = "UPDATE lots SET winner_id = ? WHERE id = ?";
+
+    return updateData($sql, $data);
 }
 
 //Возвращает текущую цену

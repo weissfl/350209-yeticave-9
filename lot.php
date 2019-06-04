@@ -1,7 +1,10 @@
 <?php
 require_once('init.php');
 
+$lot = '';
+
 if (isset($_GET['id']) && !empty($_GET['id']) && ($lot = getLot($_GET['id']))) {
+    $lot["history_bets"] = getHistoryBets($lot["id"]) ?? [];
     $page_content = include_template('lot.php', ['lot' => $lot]);
 } else {
     http_response_code(404);
@@ -37,10 +40,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'errors' => $errors,
             'lot' => $lot
         ]);
-    } else {
+    } elseif (isset($_SESSION['user']['id'], $_GET['id'])) {
+
         insertBet([$bet['cost'], $_SESSION['user']['id'], $_GET['id']]);
 
         $lot = getLot($_GET['id']);
+        $lot["history_bets"] = getHistoryBets($lot["id"]) ?? [];
         $page_content = include_template('lot.php', ['lot' => $lot]);
     }
 }

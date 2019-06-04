@@ -1,6 +1,8 @@
 <?php
 require_once('init.php');
 
+$page_content = include_template('sign-up.php', ['categories' => $categories]);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $required_fields = [
@@ -67,9 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $sign_up['avatar']
         ]);
         header("Location: login.php");
+
     }
-} else {
-    $page_content = include_template('sign-up.php', ['categories' => $categories]);
 }
 
 $layout_content = include_template('layout.php', [

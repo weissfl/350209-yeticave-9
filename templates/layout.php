@@ -17,8 +17,9 @@
                 <img src="../img/logo.svg" width="160" height="39" alt="Логотип компании YetiCave">
             </a>
             <form class="main-header__search" method="get" action="search.php" autocomplete="off">
-                <input type="search" name="search" placeholder="Поиск лота" value="<?php if (isset($keyword)): echo strip_tags($keyword); endif; ?>">
-                <input class="main-header__search-btn" type="submit" name="find" value="Найти">
+                <input type="search" name="search" placeholder="Поиск лота"
+                       value="<?php if (isset($category_id)): echo strip_tags($category_id); endif; ?>">
+                <input class="main-header__search-btn" type="submit" value="Найти">
             </form>
             <a class="main-header__add-lot button" href="/add.php">Добавить лот</a>
 
@@ -53,7 +54,7 @@
             <ul class="nav__list container">
                 <?php foreach ($categories as $value): ?>
                     <li class="nav__item">
-                        <a href="pages/all-lots.html">
+                        <a href="all-lots.php?id=<?= strip_tags($value["id"]); ?>">
                             <?= strip_tags($value["name"]); ?>
                         </a>
                     </li>
@@ -69,7 +70,7 @@
         <ul class="nav__list container">
             <?php foreach ($categories as $value): ?>
                 <li class="nav__item">
-                    <a href="pages/all-lots.html">
+                    <a href="all-lots.php?id=<?= strip_tags($value["id"]); ?>">
                         <?= strip_tags($value["name"]); ?>
                     </a>
                 </li>

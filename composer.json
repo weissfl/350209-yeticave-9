@@ -1,0 +1,13 @@
+{
+    "name": "weissfl/350209-yeticave-9",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Weissfl",
+            "email": "dmitry.pr@gmail.com"
+        }
+    ],
+    "require": {
+        "swiftmailer/swiftmailer": "^6.2"
+    }
+}

@@ -16,7 +16,7 @@
                 <?php
                 foreach ($categories as $category) {
                     if (isset($category["id"])) {
-                        echo '<option value="' . strip_tags($category["id"]) . '" ' . (($category["id"] == $lot["category"]) ? 'selected' : '') . '>';
+                        echo '<option value="' . strip_tags($category["id"]) . '" ' . ((isset($lot["category"]) && $category["id"] == $lot["category"]) ? 'selected' : '') . '>';
                         if (isset($category["name"])) {
                             echo strip_tags($category["name"]);
                         }

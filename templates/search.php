@@ -1,8 +1,8 @@
 <div class="container">
     <section class="lots">
 
-        <?php if (!empty($keyword)) { ?>
-            <h2>Результаты поиска по запросу «<span><?= strip_tags($keyword) ?></span>»</h2>
+        <?php if (!empty($category_id)) { ?>
+            <h2>Результаты поиска по запросу «<span><?= strip_tags($category_id) ?></span>»</h2>
 
             <?php if (!empty($search_results)) { ?>
                 <ul class="lots__list">
@@ -64,19 +64,19 @@
 
             <li class="pagination-item pagination-item-prev">
                 <?php if ($page_current > 1): ?>
-                    <a href="?search=<?php if (isset($keyword)): echo strip_tags($keyword); endif; ?>&page=<?php if (isset($page_current)): echo $page_current - 1; endif; ?>">Назад</a>
+                    <a href="?search=<?php if (isset($category_id)): echo strip_tags($category_id); endif; ?>&page=<?php if (isset($page_current)): echo $page_current - 1; endif; ?>">Назад</a>
                 <?php endif; ?>
             </li>
 
             <?php foreach ($pages as $page): ?>
                 <li class="pagination-item <?php if ($page == $page_current): ?>pagination-item-active<?php endif; ?>">
-                    <a href="?search=<?php if (isset($keyword)): echo strip_tags($keyword); endif; ?>&page=<?php if (isset($page)): echo strip_tags($page); endif; ?>"><?php if (isset($page)): echo strip_tags($page); endif; ?></a>
+                    <a href="?search=<?php if (isset($category_id)): echo strip_tags($category_id); endif; ?>&page=<?php if (isset($page)): echo strip_tags($page); endif; ?>"><?php if (isset($page)): echo strip_tags($page); endif; ?></a>
                 </li>
             <?php endforeach; ?>
 
             <li class="pagination-item pagination-item-next">
                 <?php if ($page_current != count($pages)): ?>
-                    <a href="?search=<?php if (isset($keyword)): echo strip_tags($keyword); endif; ?>&page=<?php if (isset($page_current)): echo $page_current + 1; endif; ?>">Вперёд</a>
+                    <a href="?search=<?php if (isset($category_id)): echo strip_tags($category_id); endif; ?>&page=<?php if (isset($page_current)): echo $page_current + 1; endif; ?>">Вперёд</a>
                 <?php endif; ?>
             </li>
         </ul>

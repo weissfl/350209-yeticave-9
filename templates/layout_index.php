@@ -17,7 +17,7 @@
             </a>
             <form class="main-header__search" method="get" action="search.php" autocomplete="off">
                 <input type="search" name="search" placeholder="Поиск лота">
-                <input class="main-header__search-btn" type="submit" name="find" value="Найти">
+                <input class="main-header__search-btn" type="submit" value="Найти">
             </form>
             <a class="main-header__add-lot button" href="/add.php">Добавить лот</a>
 
@@ -57,7 +57,7 @@
         <ul class="nav__list container">
             <?php foreach ($categories as $value): ?>
                 <li class="nav__item">
-                    <a href="pages/all-lots.html">
+                    <a href="all-lots.php?id=<?= strip_tags($value["id"]); ?>">
                         <?= strip_tags($value["name"]); ?>
                     </a>
                 </li>
