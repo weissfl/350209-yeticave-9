@@ -5,7 +5,7 @@
     <ul class="promo__list">
         <?php foreach ($categories as $value): ?>
             <li class="promo__item promo__item--<?= strip_tags($value["char_code"]); ?>">
-                <a class="promo__link" href="pages/all-lots.html">
+                <a class="promo__link" href="all-lots.php?id=<?= strip_tags($value["id"]); ?>">
                     <?php if (isset($value["name"])) {
                         echo strip_tags($value["name"]);
                     } ?>

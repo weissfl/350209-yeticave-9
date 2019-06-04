@@ -15,4 +15,5 @@ $layout_content = include_template('layout_index.php', [
 ]);
 
 echo $layout_content;
+require_once('getwinner.php');
 

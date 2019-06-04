@@ -6,6 +6,8 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
+$page_content = include_template('add.php', ['categories' => $categories]);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $required_fields = [
@@ -37,11 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($field === "lot-date" && !empty($value)) {
-            if ($field === "lot-date" && !validDate($value)) {
+            if (!validDate($value)) {
                 $errors[$field] = 'Указанная дата должна быть больше текущей даты, хотя бы на один день';
             }
 
-            if ($field === "lot-date" && !is_date_valid($value)) {
+            if (!is_date_valid($value)) {
                 $errors[$field] = 'Поле дата завершения должно быть в формате ГГГГ-ММ-ДД';
             }
         }
@@ -62,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     }
 
-    if (!empty($_FILES['lot-img']['name']) || !empty($_FILES['lot-img']['tmp_name']) || empty($_FILES['lot-img']['error'])) {
+    if (!empty($_FILES['lot-img']['name']) || !empty($_FILES['lot-img']['tmp_name']) || $_FILES['lot-img']['error'] == UPLOAD_ERR_OK) {
         $tmp_path = $_FILES['lot-img']['tmp_name'];
         $file_expansion = pathinfo($_FILES['lot-img']['name'], PATHINFO_EXTENSION);
         $name = uniqid() . '.' . $file_expansion;
@@ -99,8 +101,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
         header("Location: lot.php?id=" . $id);
     }
-} else {
-    $page_content = include_template('add.php', ['categories' => $categories]);
 }
 
 $layout_content = include_template('layout.php', [

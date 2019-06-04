@@ -6,7 +6,11 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
-$bets = getBets($_SESSION['user']['id']);
+$bets = [];
+
+if (isset($_SESSION['user']['id'])) {
+    $bets = getBets($_SESSION['user']['id']);
+}
 
 $page_content = include_template('my-bets.php', [
     'categories' => $categories,

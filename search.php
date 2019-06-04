@@ -1,26 +1,24 @@
 <?php
 require_once('init.php');
 
-$keyword = '';
+$category_id = '';
 $search_results = '';
 $pages = '';
 $page_current = $_GET['page'] ?? 1;
-$page_items = 9;
+$page_items = 3;
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_GET['search'])) {
-    $keyword = trim($_GET['search']);
-    $items_count = countSearchLots($keyword);
+    $category_id = trim($_GET['search']);
+    $items_count = countSearchLots($category_id);
 
     $page_content = include_template('search.php', [
         'categories' => $categories,
-        'keyword' => $keyword,
-        'search_results' => $search_results,
-        'pages' => $pages,
-        'page_current' => $page_current
+        'keyword' => $category_id,
+        'search_results' => $search_results
     ]);
 
-    if ($items_count[0]['count_page'] > 0) {
-        $pages_count = ceil($items_count[0]['count_page'] / $page_items);
+    if ($items_count > 0) {
+        $pages_count = ceil($items_count / $page_items);
 
         if ($page_current > $pages_count || $page_current <= 0) {
             http_response_code(404);
@@ -29,11 +27,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_GET['search'])) {
             $offset = ($page_current - 1) * $page_items;
             $pages = range(1, $pages_count);
 
-            $search_results = searchLots([$keyword, $page_items, $offset]);
+            $search_results = searchLots([$category_id, $page_items, $offset]);
 
             $page_content = include_template('search.php', [
                 'categories' => $categories,
-                'keyword' => $keyword,
+                'keyword' => $category_id,
                 'search_results' => $search_results,
                 'pages' => $pages,
                 'page_current' => $page_current
@@ -44,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_GET['search'])) {
 } else {
     $page_content = include_template('search.php', [
         'categories' => $categories,
-        'keyword' => $keyword,
+        'keyword' => $category_id,
         'search_results' => $search_results,
         'pages' => $pages,
         'page_current' => $page_current
@@ -54,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_GET['search'])) {
 $layout_content = include_template('layout.php', [
     'categories' => $categories,
     'content' => $page_content,
-    'keyword' => $keyword,
+    'keyword' => $category_id,
     'title' => 'Результаты поиска - Yeti Cave'
 ]);
 
