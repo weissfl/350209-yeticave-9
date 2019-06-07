@@ -13,7 +13,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ];
 
     $errors = [];
-    $sign_up = $_POST;
+    foreach ($_POST as $key => $value) {
+        $sign_up[$key] = htmlspecialchars($value);
+    }
 
     foreach ($required_fields as $field => $name) {
         if (empty($sign_up[$field])) {

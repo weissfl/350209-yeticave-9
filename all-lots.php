@@ -7,7 +7,7 @@ $pages = '';
 $pages_count = 0;
 $lots = [];
 $page_current = $_GET['page'] ?? 1;
-$page_items = 3;
+$page_items = 9;
 
 if (!empty($category_id) && ($current_category_name = getNameCategory($category_id)) !== null) {
 
@@ -19,7 +19,8 @@ if (!empty($category_id) && ($current_category_name = getNameCategory($category_
     $page_content = include_template('all-lots.php', [
         'categories' => $categories,
         'lots' => $lots,
-        'current_category_name' => $current_category_name
+        'current_category_name' => $current_category_name,
+        'pages' => $pages
     ]);
 
     if ($pages_count > 1) {
@@ -46,13 +47,6 @@ if (!empty($category_id) && ($current_category_name = getNameCategory($category_
     http_response_code(404);
     $page_content = include_template('404.php');
 }
-
-
-//$page_content = include_template('all-lots.php', [
-//    'categories' => $categories,
-//    'lots' => $lots,
-//    'current_category_name' => $current_category_name
-//]);
 
 $layout_content = include_template('layout.php', [
     'categories' => $categories,
